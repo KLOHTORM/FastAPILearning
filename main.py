@@ -17,6 +17,10 @@ class BookCreate(BaseModel):
     genre: str
     pages: int
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
+
 @app.get("/books")
 def get_books():
     return books
@@ -47,33 +51,15 @@ def create_book(new_book: BookCreate):
     books.append(book_to_add)
     return book_to_add
 
+@app.put("/books/{id}", status_code=status.HTTP_200_OK)
+def update_book(id: int, updated_book: BookCreate):
+    for book in books:
+        if book["id"] == id:
+            book["title"] = updated_book.title
+            book["author"] = updated_book.author
+            book["genre"] = updated_book.genre
+            book["pages"] = updated_book.pages
+            return book
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Книга не найдена")
 
 
-
-
-
-
-# for book in books:
-#     print(book["title"])
-# print()
-
-# for book in books:
-#     if book["pages"]== 448:
-#         print(book["title"])
-# print()
-
-# print(books[2]["title"])
-# print()
-
-# for book in books[::-1]:
-#     print(book["title"])
-# print()
-
-# for book in books:
-#     if book["id"] == 15:
-#         print(book["title"])
-
-
-@app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
